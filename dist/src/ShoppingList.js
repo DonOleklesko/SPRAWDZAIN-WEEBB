@@ -1,0 +1,49 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const ShoppingItem_js_1 = __importDefault(require("./ShoppingItem.js"));
+class ShoppingList {
+    constructor() {
+        this.items = [];
+        this.nextId = 1;
+    }
+    add(name, quantity) {
+        const trimmedName = name.trim();
+        const existing = this.items.find(item => item.name.toLowerCase() === trimmedName.toLowerCase());
+        if (existing) {
+            existing.quantity += quantity;
+            return existing;
+        }
+        const newItem = new ShoppingItem_js_1.default(this.nextId, trimmedName, quantity);
+        this.nextId++;
+        this.items.push(newItem);
+        return newItem;
+    }
+    remove(id) {
+        this.items = this.items.filter(item => item.id !== id);
+    }
+    getById(id) {
+        return this.items.find(item => item.id === id);
+    }
+    toggle(id) {
+        const item = this.getById(id);
+        if (item) {
+            item.toggle();
+        }
+    }
+    countRemaining() {
+        return this.items.filter(item => !item.bought).length;
+    }
+    getFiltered(filter) {
+        if (filter === "toBuy") {
+            return this.items.filter(item => !item.bought);
+        }
+        if (filter === "bought") {
+            return this.items.filter(item => item.bought);
+        }
+        return [...this.items];
+    }
+}
+exports.default = ShoppingList;
